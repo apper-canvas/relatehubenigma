@@ -51,9 +51,9 @@ try {
       ]);
 
       // Calculate stats
-      const activeDeals = deals.filter(deal => !["Won", "Lost"].includes(deal.stage));
-      const pipelineValue = activeDeals.reduce((sum, deal) => sum + deal.value, 0);
-      const completedTasks = tasks.filter(task => task.completed).length;
+const activeDeals = deals.filter(deal => !["Won", "Lost"].includes(deal.stage_c));
+      const pipelineValue = activeDeals.reduce((sum, deal) => sum + (deal.value_c || 0), 0);
+      const completedTasks = tasks.filter(task => task.completed_c).length;
 
       setStats({
         totalContacts: contacts.length,
@@ -87,28 +87,28 @@ try {
     const pipelineValues = [];
     for (let i = 5; i >= 0; i--) {
       const date = subDays(new Date(), i * 30);
-      months.push(format(date, 'MMM'));
+months.push(format(date, 'MMM'));
       const monthDeals = deals.filter(deal => 
-        new Date(deal.createdAt) <= date && !["Won", "Lost"].includes(deal.stage)
+        new Date(deal.CreatedOn) <= date && !["Won", "Lost"].includes(deal.stage_c)
       );
-      pipelineValues.push(monthDeals.reduce((sum, deal) => sum + deal.value, 0));
+      pipelineValues.push(monthDeals.reduce((sum, deal) => sum + (deal.value_c || 0), 0));
     }
 
     // Deal Stages Distribution
-    const stageGroups = deals.reduce((acc, deal) => {
-      acc[deal.stage] = (acc[deal.stage] || 0) + 1;
+const stageGroups = deals.reduce((acc, deal) => {
+      acc[deal.stage_c] = (acc[deal.stage_c] || 0) + 1;
       return acc;
     }, {});
 
     // Win Rate Analysis
-    const totalClosed = deals.filter(deal => ["Won", "Lost"].includes(deal.stage)).length;
-    const won = deals.filter(deal => deal.stage === "Won").length;
-    const lost = deals.filter(deal => deal.stage === "Lost").length;
+const totalClosed = deals.filter(deal => ["Won", "Lost"].includes(deal.stage_c)).length;
+    const won = deals.filter(deal => deal.stage_c === "Won").length;
+    const lost = deals.filter(deal => deal.stage_c === "Lost").length;
     
     // Deal Progression Funnel
     const stages = ["Lead", "Qualified", "Proposal", "Negotiation", "Won"];
-    const funnelData = stages.map(stage => 
-      deals.filter(deal => deal.stage === stage).length
+const funnelData = stages.map(stage => 
+      deals.filter(deal => deal.stage_c === stage).length
     );
 
     return {
@@ -425,7 +425,7 @@ try {
 
             <div className="space-y-4">
               {recentActivities.length > 0 ? (
-                recentActivities.map((activity) => (
+recentActivities.map((activity) => (
                   <ActivityItem key={activity.Id} activity={activity} />
                 ))
               ) : (

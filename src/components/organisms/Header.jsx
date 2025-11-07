@@ -1,100 +1,118 @@
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/layouts/Root";
+import { useSelector } from "react-redux";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 
-const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+const Header = ({ onAddContact, onAddDeal, onAddTask }) => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { user, isAuthenticated } = useSelector(state => state.user);
 
   const navigation = [
-    { name: "Dashboard", path: "/", icon: "LayoutDashboard" },
-    { name: "Contacts", path: "/contacts", icon: "Users" },
-    { name: "Pipeline", path: "/pipeline", icon: "GitBranch" },
-    { name: "Tasks", path: "/tasks", icon: "CheckSquare" },
+    { name: 'Dashboard', href: '/', icon: 'BarChart3' },
+    { name: 'Contacts', href: '/contacts', icon: 'Users' },
+    { name: 'Pipeline', href: '/pipeline', icon: 'GitBranch' },
+    { name: 'Tasks', href: '/tasks', icon: 'CheckSquare' },
   ];
 
-
+  const isActive = (href) => {
+    if (href === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(href);
+  };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <header className="bg-surface border-b border-gray-200 sticky top-0 z-50">
+      <div className="px-6 py-4">
+        <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
-              <ApperIcon name="Zap" className="h-5 w-5 text-white" />
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-r from-primary to-blue-700 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+              R
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-              RelateHub
-            </span>
-          </Link>
+            <h1 className="text-xl font-bold text-secondary">RelateHub</h1>
+          </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
-            {navigation.map((item) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
-                    isActive
-                      ? "bg-primary text-white shadow-sm"
-                      : "text-gray-600 hover:text-primary hover:bg-gray-50"
-                  }`}
-                >
-                  <ApperIcon name={item.icon} className="h-4 w-4" />
+          {/* Navigation */}
+          <nav className="hidden md:flex space-x-1">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive(item.href)
+                    ? 'bg-primary text-white'
+                    : 'text-secondary hover:bg-gray-100'
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <ApperIcon name={item.icon} size={16} />
                   <span>{item.name}</span>
-                </Link>
-              );
-            })}
+                </div>
+              </Link>
+            ))}
           </nav>
 
-          {/* Quick Add Button */}
-<div className="flex items-center space-x-4">
+          {/* Actions */}
+          <div className="flex items-center space-x-2">
+            {/* Quick Add Buttons */}
+            <div className="hidden lg:flex items-center space-x-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onAddContact}
+                className="text-xs"
+              >
+                <ApperIcon name="UserPlus" size={14} />
+                <span className="ml-1">Contact</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onAddDeal}
+                className="text-xs"
+              >
+                <ApperIcon name="Handshake" size={14} />
+                <span className="ml-1">Deal</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onAddTask}
+                className="text-xs"
+              >
+                <ApperIcon name="Plus" size={14} />
+                <span className="ml-1">Task</span>
+              </Button>
+            </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
-            >
-              <ApperIcon name={isMenuOpen ? "X" : "Menu"} className="h-6 w-6" />
-            </button>
+            {/* User Menu */}
+            {isAuthenticated && user && (
+              <div className="flex items-center space-x-3 pl-3 border-l border-gray-200">
+                <div className="hidden sm:block text-right">
+                  <div className="text-sm font-medium text-secondary">
+                    {user.firstName} {user.lastName}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {user.emailAddress}
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={logout}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <ApperIcon name="LogOut" size={16} />
+                  <span className="ml-1 hidden sm:inline">Logout</span>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="md:hidden py-4 border-t border-gray-200 mt-2"
-          >
-            <div className="space-y-2">
-              {navigation.map((item) => {
-                const isActive = location.pathname === item.path;
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      isActive
-                        ? "bg-primary text-white"
-                        : "text-gray-600 hover:text-primary hover:bg-gray-50"
-                    }`}
-                  >
-                    <ApperIcon name={item.icon} className="h-5 w-5" />
-                    <span>{item.name}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
       </div>
     </header>
   );

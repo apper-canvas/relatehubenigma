@@ -73,10 +73,11 @@ const ContactModal = ({ isOpen, onClose, contact, onSave }) => {
     try {
       const contactData = {
         ...formData,
-        tags: formData.tags
+tags: formData.tags
           .split(",")
           .map(tag => tag.trim())
-          .filter(tag => tag.length > 0),
+          .filter(tag => tag.length > 0)
+          .join(","),
       };
 
       await onSave(contactData);

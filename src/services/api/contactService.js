@@ -75,7 +75,9 @@ class ContactService {
           company_c: contactData.company_c || contactData.company,
           phone_c: contactData.phone_c || contactData.phone,
           notes_c: contactData.notes_c || contactData.notes,
-          tags_c: contactData.tags_c || contactData.tags
+tags_c: Array.isArray(contactData.tags_c || contactData.tags) 
+            ? (contactData.tags_c || contactData.tags).join(",")
+            : (contactData.tags_c || contactData.tags)
         }]
       };
 
@@ -125,7 +127,9 @@ class ContactService {
           company_c: contactData.company_c || contactData.company,
           phone_c: contactData.phone_c || contactData.phone,
           notes_c: contactData.notes_c || contactData.notes,
-          tags_c: contactData.tags_c || contactData.tags
+tags_c: Array.isArray(contactData.tags_c || contactData.tags) 
+            ? (contactData.tags_c || contactData.tags).join(",")
+            : (contactData.tags_c || contactData.tags)
         }]
       };
 

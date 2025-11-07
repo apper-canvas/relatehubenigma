@@ -167,8 +167,8 @@ const task = tasks.find(t => t.Id === taskId);
   const handleToggleComplete = async (taskId) => {
     const task = tasks.find(t => t.Id === taskId);
     if (!task) return;
-
-const updatedTask = { completed_c: !task.completed_c };
+try {
+      const updatedTask = { completed_c: !task.completed_c };
       await taskService.update(taskId, updatedTask);
       await activityService.create({
         contact_id_c: task.contact_id_c?.Id || task.contact_id_c,
@@ -178,7 +178,7 @@ const updatedTask = { completed_c: !task.completed_c };
         timestamp_c: new Date().toISOString(),
       });
       
-setTasks(prev =>
+      setTasks(prev =>
         prev.map(t =>
           t.Id === taskId
             ? { ...t, completed_c: !t.completed_c, ModifiedOn: new Date().toISOString() }
@@ -187,7 +187,7 @@ setTasks(prev =>
       );
       
       toast.success(
-updatedTask.completed_c 
+        updatedTask.completed_c 
           ? "Task marked as completed!" 
           : "Task reopened!"
       );

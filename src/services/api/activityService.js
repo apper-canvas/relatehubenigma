@@ -1,5 +1,4 @@
-import { getApperClient } from '@/services/apperClient';
-
+import { getApperClient } from "@/services/apperClient";
 class ActivityService {
   constructor() {
     this.tableName = 'activity_c';
@@ -167,16 +166,16 @@ class ActivityService {
         const successful = response.results.filter(r => r.success);
         const failed = response.results.filter(r => !r.success);
         
-        if (failed.length > 0) {
+if (failed.length > 0) {
           console.error(`Failed to create ${failed.length} activities:`, failed);
           failed.forEach(record => {
             if (record.errors) {
               record.errors.forEach(error => {
-                throw new Error(`${error.fieldLabel}: ${error.message}`);
+                console.error(`${error.fieldLabel}: ${error.message}`);
               });
             }
             if (record.message) {
-              throw new Error(record.message);
+              console.error(record.message);
             }
           });
         }
@@ -216,16 +215,16 @@ class ActivityService {
         const successful = response.results.filter(r => r.success);
         const failed = response.results.filter(r => !r.success);
         
-        if (failed.length > 0) {
+if (failed.length > 0) {
           console.error(`Failed to update ${failed.length} activities:`, failed);
           failed.forEach(record => {
             if (record.errors) {
               record.errors.forEach(error => {
-                throw new Error(`${error.fieldLabel}: ${error.message}`);
+                console.error(`${error.fieldLabel}: ${error.message}`);
               });
             }
             if (record.message) {
-              throw new Error(record.message);
+              console.error(record.message);
             }
           });
         }
@@ -254,11 +253,11 @@ class ActivityService {
         const successful = response.results.filter(r => r.success);
         const failed = response.results.filter(r => !r.success);
         
-        if (failed.length > 0) {
+if (failed.length > 0) {
           console.error(`Failed to delete ${failed.length} activities:`, failed);
           failed.forEach(record => {
             if (record.message) {
-              throw new Error(record.message);
+              console.error(record.message);
             }
           });
         }
